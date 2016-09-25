@@ -11,7 +11,7 @@ ProgreSQL database before running the samples. Also don't forget to updated the 
 The samples are fairly salf-explanatory.
 
 
-Creating a database session is fairly easy. Do not forget to wrap in a using statement to dispose resources after you are done working with the session.
+Creating a database session is fairly easy. Do not forget to wrap it in a using statement to dispose resources after you are done working with the session.
 ```C#
 using (var session = new DbSession(new NpgsqlConnection(connectionString)))
 {
@@ -19,9 +19,8 @@ using (var session = new DbSession(new NpgsqlConnection(connectionString)))
 }
 ```
 
-Before getting a list of items, you need to create a class that matches the columns of the table. The matching between the database columns and the
-C# properties is done through the NamingConverter. You can modify the NamingConverter according to your needs. For now it converts a database column 
-named a_b_c into Abc in C#. 
+This sample shows how to get list of items from a table. The matching between the database columns and the C# properties is done through 
+the NamingConverter. You can modify the NamingConverter according to your needs. For now it converts a database column named a_b_c into Abc in C#. 
 ```C#
 public class Person
 {
@@ -47,9 +46,20 @@ foreach (var person in persons)
 
 This sample shows how to get a scalar value from a SQL statement and at the same time how to pass parameters.
 ```C#
-   var personCount = session.Sql("select count(*) from person where name = @name")
-                                    .Parameter("@name", "jane")
-```                                  .ToScalar<long>();
+var personCount = session.Sql("select count(*) from person where name = @name")
+					 .Parameter("@name", "jane")
+					 .ToScalar<long>();
+```  
 
+This sample show to call a database function, which is no different from calling a SQL statement and passing complex parameters, such as arrays.
+```C#
+var persons2 = session.Sql("select * from func_get_persons(@name)")
+					.Parameter("@name", new string[] { "john", "jane" }, NpgsqlDbType.Array | NpgsqlDbType.Text)
+					.ToList<Person>();
 
+foreach (var person in persons2)
+{
+	System.Console.WriteLine(person);
+}
+```  
 

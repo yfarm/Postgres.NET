@@ -20,8 +20,8 @@ using (var session = new DbSession(new NpgsqlConnection(connectionString)))
 ```
 
 Before getting a list of items, you need to create a class that matches the columns of the table. The matching between the database columns and the
-C# properties is done through the NamingConverter. You can modify the NamingConverter according to your needs. For now it converts someting like
-a_b_c to Abc in C#. 
+C# properties is done through the NamingConverter. You can modify the NamingConverter according to your needs. For now it converts a database column 
+named a_b_c into Abc in C#. 
 ```C#
 public class Person
 {
@@ -33,7 +33,8 @@ public class Person
 
 	public override string ToString()
 	{
-		return string.Format("Id: {0}, Name: {1}, Age: {2}, Employed: {3}, Created Date: {4}", Id, Name, Age, Employed, CreatedDate);
+		return string.Format("Id: {0}, Name: {1}, Age: {2}, Employed: {3}, Created Date: {4}", 
+							  Id, Name, Age, Employed, CreatedDate);
 	}
 }
 
@@ -43,6 +44,12 @@ foreach (var person in persons)
 	System.Console.WriteLine(person);
 }
 ```
+
+This sample shows how to get a scalar value from a SQL statement and at the same time how to pass parameters.
+```C#
+   var personCount = session.Sql("select count(*) from person where name = @name")
+                                    .Parameter("@name", "jane")
+```                                  .ToScalar<long>();
 
 
 

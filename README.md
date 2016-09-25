@@ -52,6 +52,24 @@ var personCount = session.Sql("select count(*) from person where name = @name")
 ```  
 
 This sample show to call a database function, which is no different from calling a SQL statement and passing complex parameters, such as arrays.
+```SQL
+CREATE OR REPLACE FUNCTION public.func_get_persons(_name text[])
+  RETURNS SETOF person AS
+$BODY$
+DECLARE
+BEGIN
+  return query
+  select p.* from person p
+  where p.name = ANY(_name);
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 1
+  ROWS 10;
+ALTER FUNCTION public.func_get_persons(text[])
+  OWNER TO postgres;
+```  
+
 ```C#
 var persons2 = session.Sql("select * from func_get_persons(@name)")
 					.Parameter("@name", new string[] { "john", "jane" }, NpgsqlDbType.Array | NpgsqlDbType.Text)

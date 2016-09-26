@@ -3,15 +3,16 @@ Postgres.NET is a simple .NET database wrapper for PostgreSQL. It is an efficien
 Entity Framework or NHibernate. While ORM frameworks are nice and easy to use at times, they also come with come with several drawbacks, especially
 when trying to build complex and high performace applications. PostgreSQL is an amazing database and it is fairy easy to use for an experienced developer 
 who wants to put his or her business logic in SQL statements or database functions and call them through a thin wrapper, which is way more efficient 
-and faster than using an ORM. The goal of this project is to provide a simple database wrapper to work with PostgreSQL. It can also be easily modified 
+and faster than using an ORM. The goal of this project is to provide a simple database wrapper to work with PostgreSQL. It can be also easily modified 
 to work with any database that has an ADO.NET data provider, such as MySQL, SQL Server, Oracle, etc. The project is dependent on the Npsql data provider 
 for PostgreSQL. You can read more about it at http://www.npgsql.org. Please download the sample project or get it through GIT and play around with 
 the samples before importing the code into your own project. In the console project you will find a test.script that you need to run on a 
-ProgreSQL database before running the samples. Also don't forget to updated the database credentials in the connection string. 
+ProgreSQL database before running the samples. Also do not forget to update the database credentials in the connection string. 
 The samples are fairly salf-explanatory.
 
 
-Creating a database session is fairly easy. Do not forget to wrap it in a using statement to dispose resources after you are done working with the session.
+Creating a database session is fairly easy. Do not forget to wrap it in a using statement to dispose resources after you are done working 
+with the session.
 ```C#
 using (var session = new DbSession(new NpgsqlConnection(connectionString)))
 {
@@ -19,8 +20,9 @@ using (var session = new DbSession(new NpgsqlConnection(connectionString)))
 }
 ```
 
-This sample shows how to get list of items from a table. The matching between the database columns and the C# properties is done through 
-the NamingConverter. You can modify the NamingConverter according to your needs. For now it converts a database column named a_b_c into Abc in C#. 
+This sample shows how to get list of items from a table. You will need to create a C# class that matches the table design. 
+The matching between the database columns and the C# properties is done through the NamingConverter. You can modify the NamingConverter 
+according to your needs. For now it converts a database column named a_b_c into Abc in C#. 
 ```C#
 public class Person
 {

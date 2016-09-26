@@ -34,13 +34,13 @@ public class Person
 
 	public override string ToString()
 	{
-		return string.Format("Id: {0}, Name: {1}, Age: {2}, Employed: {3}, Created Date: {4}", 
-							  Id, Name, Age, Employed, CreatedDate);
+         return string.Format("Id: {0}, Name: {1}, Age: {2}, Employed: {3}, Created Date: {4}", 
+                Id, Name, Age.HasValue ? Age.Value.ToString(): "null", Employed, CreatedDate);
 	}
 }
 
-var persons = session.Sql("select * from person").ToList<Person>();
-foreach (var person in persons)
+var personList = session.Sql("select * from person").ToList<Person>();
+foreach (var person in personList)
 {
 	System.Console.WriteLine(person);
 }
@@ -73,13 +73,53 @@ ALTER FUNCTION public.func_get_persons(text[])
 ```  
 
 ```C#
-var persons2 = session.Sql("select * from func_get_persons(@name)")
+var personsList = session.Sql("select * from func_get_persons(@name)")
 					.Parameter("@name", new string[] { "john", "jane" }, NpgsqlDbType.Array | NpgsqlDbType.Text)
 					.ToList<Person>();
 
-foreach (var person in persons2)
+foreach (var person in personsList)
 {
 	System.Console.WriteLine(person);
 }
 ```  
 
+This sample shows how to work with transactions and how to execute data manipulation statements.
+```C#
+try
+{
+	session.BeginTransaction();
+
+	session.Sql("delete from person")
+		   .Execute();
+
+	session.Sql(@"insert into person (id, name, age, employed, created_date)
+				  values(@id, @name, @age, @employed, @created_date)")
+		   .Parameter("@id", 1)
+		   .Parameter("@name", "jake")
+		   .Parameter("@age", 23)
+		   .Parameter("@employed", true)
+		   .Parameter("@created_date", DateTime.Now)
+		   .Execute();
+
+	session.Sql(@"insert into person (id, name, age, employed, created_date)
+				  values(@id, @name, @age, @employed, @created_date)")
+		   .Parameter("@id", 2)
+		   .Parameter("@name", "cindi")
+		   .Parameter("@age", null)
+		   .Parameter("@employed", false)
+		   .Parameter("@created_date", DateTime.Now)
+		   .Execute();
+
+	session.CommitTransaction();
+
+	System.Console.WriteLine("Transaction was committed");
+}
+catch (Exception e)
+{
+	System.Console.WriteLine(e.Message);
+
+	session.RollbackTransaction();
+
+	System.Console.WriteLine("Transaction was rolled back");
+}
+``` 

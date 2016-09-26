@@ -13,7 +13,7 @@ namespace Postgres.NET.Console
         static void Main(string[] args)
         {
             string username = "postgres";
-            string password = "asdf1982";
+            string password = "pass12345";
             string connectionString = string.Format(@"Server=127.0.0.1;Port=5432;Database=test;User Id={0};Password={1};", username, password);
 
 

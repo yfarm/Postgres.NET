@@ -73,17 +73,17 @@ ALTER FUNCTION public.func_get_persons(text[])
 ```  
 
 ```C#
-var personsList = session.Sql("select * from func_get_persons(@name)")
+var personList = session.Sql("select * from func_get_persons(@name)")
 					.Parameter("@name", new string[] { "john", "jane" }, NpgsqlDbType.Array | NpgsqlDbType.Text)
 					.ToList<Person>();
 
-foreach (var person in personsList)
+foreach (var person in personList)
 {
 	System.Console.WriteLine(person);
 }
 ```  
 
-This sample shows how to work with transactions and how to execute data manipulation statements.
+This sample shows how to work with transactions and execute data manipulation statements.
 ```C#
 try
 {

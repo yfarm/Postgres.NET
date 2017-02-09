@@ -16,7 +16,6 @@ namespace Postgres.NET.Console
             string password = "pass12345";
             string connectionString = string.Format(@"Server=127.0.0.1;Port=5432;Database=test;User Id={0};Password={1};", username, password);
 
-
             using (var session = new DbSession(new NpgsqlConnection(connectionString)))
             {
                 try
@@ -110,6 +109,17 @@ namespace Postgres.NET.Console
                                    .ToList<Person>();
 
                 foreach (var person in personList2)
+                {
+                    System.Console.WriteLine(person);
+                }
+
+                System.Console.WriteLine("---------------------------");
+            }
+
+            using (var session = new LazyDbSession(() => new DbSession(new NpgsqlConnection(connectionString))))
+            {
+                var personList = session.Value.Sql("select * from person").ToList<Person>();
+                foreach (var person in personList)
                 {
                     System.Console.WriteLine(person);
                 }
